@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Valentine Surprise 💖</title>
+<style>
+body {
+  margin: 0;
+  font-family: Georgia, serif;
+  background: #2E0854;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+  text-align: center;
+  color: #fff;
+  position: relative;
+}
+
+/* Background blobs */
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.15;
+  mix-blend-mode: screen;
+  animation: floatBlob linear infinite;
+  filter: blur(30px);
+}
+
+@keyframes floatBlob {
+  0% { transform: translate(0,0) rotate(0deg); }
+  50% { transform: translate(100px,-150px) rotate(180deg); }
+  100% { transform: translate(0,0) rotate(360deg); }
+}
+
+#message-box {
+  font-size: 22px;
+  max-width: 600px;
+  margin-bottom: 20px;
+  white-space: pre-line;
+  color: #fff;
+  position: relative;
+  z-index: 20;
+}
+
+.countdown {
+  font-size: 60px;
+  font-weight: bold;
+  color: #ff1493;
+  animation: pop 0.7s ease forwards;
+  text-shadow: 0 0 10px #fff, 0 0 20px #ff69b4;
+}
+
+@keyframes pop {
+  0% { transform: scale(0.2); opacity: 0; }
+  50% { transform: scale(1.5); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.gift-emoji {
+  font-size: 100px;
+  cursor: pointer;
+  transition: transform 0.3s ease, opacity 0.5s ease;
+  display: inline-block;
+  position: relative;
+  z-index: 20;
+}
+
+.buttons { margin-top: 20px; z-index: 20; position: relative; }
+
+button {
+  padding: 10px 22px;
+  margin: 0 12px;
+  font-size: 18px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  background: #ff1493;
+  color: white;
+  transition: transform 0.2s ease;
+  position: relative;
+}
+button:hover { transform: scale(1.1); }
+
+.sparkle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #fff;
+  pointer-events: none;
+  animation: sparkleAnim 1.5s linear infinite alternate;
+}
+
+@keyframes sparkleAnim {
+  0% { transform: scale(1); opacity:1;}
+  100% { transform: scale(0.5); opacity:0.3;}
+}
+
+/* Card with fixed size + gradient */
+.card {
+  background: linear-gradient(135deg, rgba(234,215,255,0.85), rgba(200,180,255,0.7));
+  padding: 30px;
+  border-radius: 25px;
+  width: 550px;
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.35);
+  position: relative;
+  z-index: 10;
+  opacity: 0;
+  transition: opacity 1.5s ease;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.card::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+
+.paragraph {
+  font-size: 1.05em;
+  line-height: 1.5em;
+  white-space: pre-wrap;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+  margin-bottom: 1em;
+  text-align: center;
+}
+
+.cursor {
+  display: inline-block;
+  width: 8px;
+  background-color: #4B0082;
+  animation: blink 1s step-start infinite;
+  vertical-align: bottom;
+}
+
+@keyframes blink {
+  0%,50%,100% { opacity: 1; }
+  25%,75% { opacity: 0; }
+}
+
+/* Inside-card hearts */
+.card-heart {
+  position: absolute;
+  font-size: 20px;
+  animation: floatHeart 1.5s ease-out forwards;
+}
+
+@keyframes floatHeart {
+  0% { transform: translate(0,0) scale(1); opacity:1;}
+  100% { transform: translate(0,-60px) scale(1.3); opacity:0;}
+}
+</style>
+</head>
+<body>
+
+<div id="message-box">Happy Valentine's Day! Are you willing to open this gift?</div>
+
+<div class="gift-emoji" id="gift">🎁</div>
+
+<div class="buttons">
+  <button id="yesBtn">Yes</button>
+  <button id="noBtn">No</button>
+</div>
+
+<div id="card-container" class="card"></div>
+<span class="cursor" id="cursor"></span>
+
+<script>
+// Background blobs
+function createBlob() {
+  const blob = document.createElement("div");
+  blob.className = "blob";
+  const size = Math.random()*200 + 100;
+  blob.style.width = size + "px";
+  blob.style.height = size + "px";
+  blob.style.background = `hsl(${Math.random()*360},70%, 60%)`;
+  blob.style.top = Math.random()*100 + "vh";
+  blob.style.left = Math.random()*100 + "vw";
+  blob.style.animationDuration = (20 + Math.random()*20) + "s";
+  document.body.appendChild(blob);
+  setTimeout(()=>blob.remove(), 40000);
+}
+for(let i=0;i<8;i++) createBlob();
+setInterval(createBlob, 800);
+
+// Background sparkles
+function createBackgroundSparkle() {
+  const s = document.createElement("div");
+  s.className = "sparkle";
+  s.style.left = Math.random()*window.innerWidth + "px";
+  s.style.top = Math.random()*window.innerHeight + "px";
+  s.style.width = (4+Math.random()*4)+"px";
+  s.style.height = s.style.width;
+  s.style.opacity = 0.5 + Math.random()*0.5;
+  document.body.appendChild(s);
+  setTimeout(()=>s.remove(), 5000);
+}
+setInterval(createBackgroundSparkle, 300);
+
+// Buttons & gift
+const noBtn = document.getElementById("noBtn");
+const yesBtn = document.getElementById("yesBtn");
+const messageBox = document.getElementById("message-box");
+const gift = document.getElementById("gift");
+const card = document.getElementById("card-container");
+
+// No button unlimited move
+function moveNoButton(){
+  const x = Math.random()*(window.innerWidth - noBtn.offsetWidth - 20);
+  const y = Math.random()*(window.innerHeight - noBtn.offsetHeight - 20);
+  noBtn.style.position="absolute";
+  noBtn.style.left = x + "px";
+  noBtn.style.top = y + "px";
+}
+noBtn.addEventListener("mouseenter", moveNoButton);
+noBtn.addEventListener("click", moveNoButton);
+
+// Floating hearts in card
+function createCardHeart() {
+  const heart = document.createElement("div");
+  heart.className="card-heart";
+  heart.innerHTML="❤️";
+  heart.style.left = (Math.random()* (card.offsetWidth-20)) + "px";
+  heart.style.top = (card.offsetHeight - 40) + "px";
+  card.appendChild(heart);
+  setTimeout(()=>heart.remove(),1500);
+}
+
+// Yes button sequence
+let yesShown = false;
+yesBtn.addEventListener("click", ()=>{
+  if(yesShown) return;
+  yesShown = true;
+
+  yesBtn.style.display = "none";
+  noBtn.style.display = "none";
+
+  gift.style.transform = "scale(2) rotate(30deg)";
+  gift.style.opacity = 0;
+
+  // Sparkles
+  for(let i=0;i<20;i++){
+    const s = document.createElement("div");
+    s.classList.add("sparkle");
+    s.style.left = (gift.offsetLeft + Math.random()*gift.offsetWidth) + "px";
+    s.style.top = (gift.offsetTop + Math.random()*gift.offsetHeight) + "px";
+    document.body.appendChild(s);
+    setTimeout(()=>s.remove(),1500);
+  }
+
+  // Show "You choose YES!" once
+  messageBox.innerHTML = "Yay! You choose YES!";
+  messageBox.style.opacity = 1;
+
+  setTimeout(()=>{
+    messageBox.style.transition = "opacity 1.5s ease";
+    messageBox.style.opacity = 0;
+
+    setTimeout(()=>{
+      messageBox.style.transition = "";
+      messageBox.style.opacity = 1;
+
+      // Countdown 1–5 with floating hearts
+      let count = 1;
+      const countdownInterval = setInterval(()=>{
+        if(count <= 5){
+          messageBox.innerHTML = <span class="countdown">${count}</span>;
+          createCardHeart();
+          count++;
+        } else {
+          clearInterval(countdownInterval);
+          messageBox.innerHTML = "";
+          card.style.opacity = 1;
+          typeAllParagraphs();
+        }
+      },1000);
+    },1500);
+  },2000);
+});
+
+// Typewriter
+const fullMessage = `Hello babu, Happy Valentine's Day!
+
+I realize na hindi man tayo magkikita today but i want you to celebrate this day with full of happiness. So napag isip-isip ko na daanin kung saan ako magaling, kung saan ako naiinis kapag ginagawa ko, pero this time hindi ako inis while doing this cause this message is for you! I hope you appreciate this🥹
+
+
+Hello asawaa! I just wanted you to know that I really appreciate you, the way you handled my mood swings, my kamalditahan and my kaartehan and from the first day i met you i knew you were special, no message can express in words the amount of genuine love i have for you, and yes we might not see each other but my love for you does not decrease, thank you for the love and support you've given me and, when everyone had turned their backs on me you stood by my side, you have given love a special meaning and i will always cherish that! Always remember that you don't always have to be the strong one, carry the weight alone your feelings are always valid and always remember that you're allowed to cry when everything gets heavy! I'm so proud of you for being strong despite all the things that have been happening to us lately and for still standing on your own even though you knew you need help from the people around you. I'm so proud of you mylove!
+
+
+If you think I didn’t notice – trust me, I saw EVERYTHING. The way you’d make time for me even when your schedule was packed to the brim… even if it was just a 5-minute video call or a quick text to check in, I know you fought to fit me in. The patience you showed me during times I was being difficult for no reason at all… especially those days when I was moody and didn’t deserve your kindness. That quiet presence of yours that always made me feel like I wasn’t alone… even miles apart, I could still feel you right beside me. The way your care stayed consistent even when we didn’t talk much – those random ‘did you eat yet?’ or ‘stay safe out there’ messages that wrap me up in warmth every single time.
+
+I might not have said it out loud enough, but I saw every little thing and felt every bit of love behind it. And honestly? I don’t even know how to put into words just how much you mean to me because of all this.
+
+Sometimes love isn’t about grand gestures or fancy surprises. Sometimes it’s the smallest, gentlest acts that leave the biggest mark on your heart. Those little things that might seem nothing to anyone else… but to me? They’re the greatest gifts I’ve ever received in my life. I love you more than words can say, and I’m so damn grateful my heart chose you.`;
+
+const paragraphs = fullMessage.split(/\n\n/);
+let isTyping = false;
+
+function typeParagraph(text, callback){
+  const p = document.createElement("div");
+  p.className="paragraph";
+  card.appendChild(p);
+  p.style.opacity=1;
+  let i=0;
+  function typeChar(){
+    if(i<text.length){
+      const char = text[i];
+      p.innerHTML+=char;
+      i++;
+      // Hearts occasionally
+      if(Math.random() < 0.08) createCardHeart();
+      let delay;
+      if(char===" ") delay=180+Math.random()*120;
+      else if(char==="\n") delay=300+Math.random()*200;
+      else delay=35+Math.random()*55;
+      setTimeout(typeChar,delay);
+    } else {
+      setTimeout(()=>{
+        p.style.transition="opacity 2s ease";
+        p.style.opacity=0;
+        setTimeout(()=>{
+          if(callback) callback();
+        },2000);
+      },1500);
+    }
+  }
+  typeChar();
+}
+
+function typeAllParagraphs(index=0){
+  if(isTyping) return;
+  isTyping = true;
+
+  function nextPara(idx){
+    if(idx < paragraphs.length){
+      typeParagraph(paragraphs[idx], ()=> nextPara(idx+1));
+    }
+  }
+  nextPara(index);
+}
+</script>
+</body>
+</html>
